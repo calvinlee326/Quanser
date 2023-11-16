@@ -82,13 +82,13 @@ class QcarEKF:
         # - u[0] = v (speed in [m/s])
         # - u[1] = delta (steering Angle in [rad])
         # - dt: change in time since last update
-        '''
+        
         return X + dt * u[0] * np.array([
             [np.cos(X[2,0])],
             [np.sin(X[2,0])],
             [np.tan(u[1]) / self.L]
         ])
-        '''
+        
         return X
 
 
@@ -96,18 +96,18 @@ class QcarEKF:
     # ==============  SECTION B -  Motion Model Jacobian ====================
     def Jf(self, X, u, dt):
         # Jacobian for the kinematic bicycle model (see self.f)
-        '''
+        
         return np.array([
                 [1, 0, -dt*u[0]*np.sin(X[2,0])],
                 [0, 1, dt*u[0]*np.cos(X[2,0])],
                 [0, 0, 1]
         ])
-        '''
+        
         return np.eye(3)
 
     # ==============  SECTION C -  Motion Model Prediction ====================
     def prediction(self, dt, u):
-        '''
+        
         # Update Covariance Estimate
         F = self.Jf(self.xHat, u, dt)
         self.P = F@self.P@np.transpose(F) + self.Q
@@ -116,14 +116,14 @@ class QcarEKF:
         self.xHat = self.f(self.xHat, u, dt)
         # Wrap th to be in the range of +/- pi
         self.xHat[2] = wrap_to_pi(self.xHat[2])
-        '''
+        
         return
 
 
     # ==============  SECTION D -  Measurement correction ====================
 
     def correction(self, y):
-        '''
+        
         # Precompute terms that will be used multiple times
         H = self.C
         P_times_HTransposed = self.P @ np.transpose(H)
@@ -143,7 +143,7 @@ class QcarEKF:
         self.xHat[2] = wrap_to_pi(self.xHat[2])
 
         self.P = (self.I - K@H) @ self.P
-        '''
+        
         return
 
 
@@ -185,17 +185,17 @@ class GyroKF:
     def prediction(self, dt, u):
         # - dt: change in time since last prediction
         # - u: most recent gyroscope measurement
-        '''
+        
         # Discretize A:
         Ad = self.I + self.A*dt
 
         self.xHat = Ad@self.xHat + dt*self.B*u
         self.P = Ad@self.P@np.transpose(Ad) + self.Q
-        '''
+        
     # ==========  SECTION G -  GPS Heading Correction  ================
     def correction(self, y):
         # - y: heading measurement from GPS
-        '''
+        
         P_times_CTransposed = self.P @ np.transpose(self.C)
 
         S = self.C @ P_times_CTransposed + self.R
@@ -211,7 +211,7 @@ class GyroKF:
 
         self.P = (self.I - K@self.C) @ self.P
         return
-        '''
+        
 
 def controlLoop():
     #region controlLoop setup
@@ -302,7 +302,7 @@ def controlLoop():
             #region : Correction Update for Filters
             if gps.readGPS():
                 # ==========  SECTION E -  Measurement Update  ================
-                '''
+                
                 # Collect new GPS readings
                 x_gps = gps.position[0]
                 y_gps = gps.position[1]
@@ -315,16 +315,16 @@ def controlLoop():
                     [th_gps]
                 ])
                 ekf_gps.correction(y)
-                '''
+                
                 ekf_sf.C = C_combined
                 ekf_sf.R = R_combined
                 # C orrection for estimator 3.a using GPS
-                '''
+                
                 kf.correction(th_gps)
-                '''
+                
 
                 # Correction for estimator 3.b using GPS and heading estimate
-                '''
+                
 
                 y = np.array([
                     [x_gps],
@@ -333,15 +333,15 @@ def controlLoop():
                 ])
 
                 ekf_sf.correction(y)
-                '''
+                
             else:
                 # Correction for 3.b using only heading estimate
-               '''
+               
                 y = np.array([[kf.xHat[0,0]]])
                 ekf_sf.C = C_headingOnly
                 ekf_sf.R = R_headingOnly
                 ekf_sf.correction(y)
-               '''
+               
             #endregion
 
             #region Update Scopes with New Data Samples

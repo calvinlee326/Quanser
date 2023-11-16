@@ -145,7 +145,7 @@ class QCar():
                 )
 
                 # Set board-specific options
-                boardOptionsString = ("steer_bias=" + str(self.steeringBias)
+                boardOptionsString = ("steer_bias=0.05"  + str(self.steeringBias)
                     + ";motor_limit=" + str(self.pwmLimit) + ';')
                 self.card.set_card_specific_options(
                     boardOptionsString,
@@ -602,8 +602,8 @@ class QCarRealSense(Camera3D):
     def __init__(
             self,
             mode='RGB&DEPTH',
-            frameWidthRGB=320,#1920
-            frameHeightRGB=240,#1080
+            frameWidthRGB=1920,#1920
+            frameHeightRGB=1080,#1080
             frameRateRGB=30,
             frameWidthDepth=1280,#1280
             frameHeightDepth=720,#720

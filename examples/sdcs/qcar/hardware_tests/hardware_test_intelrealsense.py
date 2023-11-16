@@ -13,15 +13,20 @@ if not IS_PHYSICAL_QCAR:
 
 
 #Initial Setup
-runTime = 20.0 # seconds
+runTime = 30.0 # seconds
 max_distance = 2 # meters (for depth camera)
 
-with QCarRealSense(mode='RGB&DEPTH') as myCam:
+with QCarRealSense(mode='RGB') as myCam:
     t0 = time.time()
-    while True:
-    # while time.time() - t0 < runTime: 
+    # while True:
+    while time.time() - t0 < runTime:
+
         myCam.read_RGB()
-        cv2.imshow('My RGB', myCam.imageBufferRGB)
-        # myCam.read_depth(dataMode='M')
+        cv2.imshow('MyRGB', myCam.imageBufferRGB)
+
+        # myCam.read_depth()
         # cv2.imshow('My Depth', myCam.imageBufferDepthPX/max_distance)
-        cv2.waitKey(100)
+
+        key = cv2.waitKey(100)
+        if key == 27:
+            break

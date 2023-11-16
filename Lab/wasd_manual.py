@@ -31,11 +31,11 @@ def wasd_drive():
 
     # default speed and direction
     throttle = 0.0
-    steering = 0.02
+    steering = 0.0
 
     def stop():
         throttle = 0.0
-        steering = 0.02
+        steering = 0.0
 
     # main program
     runTime = 10.0 # seconds
@@ -44,7 +44,7 @@ def wasd_drive():
     # Default LED status
     LEDs = np.array([0, 0, 0, 0, 0, 0, 0, 0])
     isReverse = False
-    headlights_on = False
+    headlights_on = True
     s_key_pressed = False
 
     turn_signal_timer = 0.0
@@ -116,7 +116,10 @@ def wasd_drive():
             headlights_on= not headlights_on
             LEDs[6] = 1 if headlights_on else 0
             LEDs[7] = 1 if headlights_on else 0
-            
+        
+        # update turnled timer
+        turn_signal_timer += 0.01
+
         # based on direction and speed update led control
         if steering > 0.15:
             if turn_signal_timer >= turn_signal_interval:
@@ -154,11 +157,10 @@ def wasd_drive():
         myCar.read_write_std(throttle=throttle, steering=steering, LEDs = LEDs)
         print(throttle, steering, isReverse, LEDs)
 
-# update turnled timer
-    turn_signal_timer += 0.01
+    
 
 t1 = threading.Thread(target=wasd_drive)
-t2 = threading.Thread(target=camPreview,args=[["front","back"]])
+t2 = threading.Thread(target=camPreview,args=[["front","left","right"]])
 
 try:
     t1.start()
